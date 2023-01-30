@@ -1,4 +1,4 @@
-package com.karen.exercise1;
+package com.karenvi.task2;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		config.setTitle("Software Architecture Task 2 (a) & (b) - Karen Villmones");
 		config.setWindowedMode(480, 800);
 		config.useVsync(true);
-		new Lwjgl3Application(new Task1(), config);
+		new Lwjgl3Application(new MyTask2(), config);
 	}
 }
