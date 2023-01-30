@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
-
+// realised I could have used vector3 to use velocity when it was too late...
 public class AnimatedHelicopter extends ApplicationAdapter {
 // Strongly inspired by this tutorial by LibGdx: https://libgdx.com/wiki/start/a-simple-game
 // And this tutorial: https://happycoding.io/tutorials/libgdx/hello-world
