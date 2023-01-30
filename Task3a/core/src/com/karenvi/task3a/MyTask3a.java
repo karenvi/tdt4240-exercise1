@@ -24,8 +24,8 @@ public class MyTask3a extends ApplicationAdapter {
 	private Rectangle helicopter;
 	private SpriteBatch sb;
 
-	private float xSpeed = 1;
-	private float ySpeed = 2;
+	private float xSpeed = 4;
+	private float ySpeed = 3;
 
 	// Tracking elapsed time
 	private float stateTime;
@@ -75,7 +75,7 @@ public class MyTask3a extends ApplicationAdapter {
 		TextureRegion currentFrame = heliAnimation.getKeyFrame(stateTime, true);
 
 		// make sure that the helicopter doesn't go outside bounds
-		if(helicopter.x < 0 || helicopter.x > Gdx.graphics.getWidth() - 162 ||helicopter.x > 480 - 162){
+		if(helicopter.x < 0 || helicopter.x > Gdx.graphics.getWidth() - 162){
 			xSpeed *= -1;
 			// flipping it <3
 			for (TextureRegion textureRegion:heliAnimation.getKeyFrames()) {
@@ -83,7 +83,7 @@ public class MyTask3a extends ApplicationAdapter {
 			}
 		}
 
-		if(helicopter.y < 0 || helicopter.y > Gdx.graphics.getHeight() - 65 || helicopter.y > 800-65){
+		if(helicopter.y < 0 || helicopter.y > Gdx.graphics.getHeight() - 65){
 			ySpeed *= -1;
 		}
 
