@@ -1,103 +1,78 @@
 package com.karenvi.task3b;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.math.Rectangle;
+
+import java.util.Random;
+// For this task I found it easier to separate task 3 a into two files, as duplicating one helicopter in one file would be really ugly code etc.
 
 public class MyTask3b extends ApplicationAdapter {
 // Strongly inspired by this tutorial by LibGdx: https://libgdx.com/wiki/start/a-simple-game
 // And this tutorial: https://happycoding.io/tutorials/libgdx/hello-world
 // And this tutorial: https://libgdx.com/wiki/graphics/2d/2d-animation
 
-	// Constant of rows and columns in the sprite sheet (heli_sprite_sheet.png)
-	private static final int sprite_sheet_cols = 4, sprite_sheet_rows = 1;
-
-	private OrthographicCamera camera;
-	private Animation<TextureRegion> heliAnimation;
-	private Texture helicopterImg;
-	private Rectangle helicopter;
-	private SpriteBatch sb;
-
-	private float xSpeed = 1;
-	private float ySpeed = 2;
-
-	// Tracking elapsed time
-	private float stateTime;
+	Helicopter helicopter1, helicopter2, helicopter3;
+	AnimatedHelicopter heli1, heli2, heli3;
+	Random rand = new Random();
+	float heli1_xspeed, heli2_xspeed, heli3_xspeed;
+	float heli1_yspeed, heli2_yspeed, heli3_yspeed;
 
 	@Override
 	public void create () {
-		int index = 0;
-		helicopterImg = new Texture(Gdx.files.internal("heli_sprite_sheet.png"));
+		heli1 = new AnimatedHelicopter(30, 100);
+		heli2 = new AnimatedHelicopter(60, 200);
+		heli3 = new AnimatedHelicopter(90, 300);
 
-		// creating the textureregion for the sprite sheet, which helps divide into the individual frames
-		TextureRegion[][] helicopter_rows_cols = TextureRegion.split(helicopterImg, helicopterImg.getWidth() / sprite_sheet_cols, helicopterImg.getHeight() / sprite_sheet_rows);
-		TextureRegion[] helicopter_frames = new TextureRegion[sprite_sheet_cols * sprite_sheet_rows];
-		heliAnimation = new Animation<TextureRegion>(0.1f, helicopter_frames);
-		sb = new SpriteBatch();
-		stateTime = 0f;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 480, 800);
-		helicopter = new Rectangle();
-		// the size of the heli1.png
-		helicopter.width = 162;
-		helicopter.height = 65;
 
-		for(int i = 0; i < sprite_sheet_rows; i++){
-			for(int j = 0; j < sprite_sheet_cols; j++){
-				helicopter_frames[index++] = helicopter_rows_cols[i][j];
-			}
-		}
-
-		for (TextureRegion textureRegion:heliAnimation.getKeyFrames()) {
-			textureRegion.flip(true, false);
-		}
 	}
 
 	@Override
 	public void render () {
-		// incrementing speed at the helicopter rectangle location/pos
-		helicopter.x += xSpeed;
-		helicopter.y += ySpeed;
-
 		ScreenUtils.clear(255, 0, 254, 1); // the background color
-		camera.update();
 
-		// needed for the animation
-		stateTime += Gdx.graphics.getDeltaTime();
+		heli1_xspeed = heli1.getxSpeed();
+		heli2_xspeed = heli2.getxSpeed();
+		heli3_xspeed = heli3.getxSpeed();
 
-		// extracts the snapshot of each frame in the sprite sheet, and looping it
-		TextureRegion currentFrame = heliAnimation.getKeyFrame(stateTime, true);
+		heli1_yspeed = heli1.getySpeed();
+		heli2_yspeed = heli2.getySpeed();
+		heli3_yspeed = heli3.getySpeed();
 
-		// make sure that the helicopter doesn't go outside bounds
-		if(helicopter.x < 0 || helicopter.x > Gdx.graphics.getWidth() - 162){
-			xSpeed *= -1;
-			// flipping it <3
-			for (TextureRegion textureRegion:heliAnimation.getKeyFrames()) {
-				textureRegion.flip(true, false);
-			}
+		if(heli1.helicoptersColliding(heli2.getHelicopter())) {
+			heli1.setxSpeed(0-heli1.getxSpeed());
+			heli1.setySpeed(0-heli1.getySpeed());
+			heli2.setxSpeed(0-heli2.getxSpeed());
+			heli2.setySpeed(0-heli2.getySpeed());
+			heli1.setFlipHeli(true);
+			heli2.setFlipHeli(true);
+
 		}
 
-		if(helicopter.y < 0 || helicopter.y > Gdx.graphics.getHeight() - 65){
-			ySpeed *= -1;
+		if(heli3.helicoptersColliding(heli1.getHelicopter())) {
+			heli3.setxSpeed(0-heli3.getxSpeed());
+			heli3.setySpeed(0-heli3.getySpeed());
+			heli1.setxSpeed(0-heli1.getxSpeed());
+			heli1.setySpeed(0-heli1.getySpeed());
+			heli3.setFlipHeli(true);
+			heli1.setFlipHeli(true);
 		}
 
-		// rendering to desktop/mobile
-		sb.begin();
-		sb.draw(currentFrame, helicopter.x, helicopter.y);
-		sb.end();
+		if(heli2.helicoptersColliding(heli3.getHelicopter())) {
+			heli2.setxSpeed(0-heli2.getxSpeed());
+			heli2.setySpeed(0-heli2.getySpeed());
+			heli3.setxSpeed(0-heli3.getxSpeed());
+			heli3.setySpeed(0-heli3.getySpeed());
+			heli2.setFlipHeli(true);
+			heli3.setFlipHeli(true);
+		}
+
+
+		// "drawing" the helicopters
+		heli1.generateAnimatedHelicopter();
+		heli2.generateAnimatedHelicopter();
+		heli3.generateAnimatedHelicopter();
+
 	}
 
-	// always have to dispose textures and sprite batches
-	@Override
-	public void dispose() {
-		sb.dispose();
-		helicopterImg.dispose();
-	}
 }
 
